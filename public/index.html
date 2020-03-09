@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Page Title</title>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+  <script src="scripts/resemble.js"></script>
+</head>
+
+<body>
+
+  <h1>Resemble.js image comparission demo.</h1>
+  File1 <input type='file' id='file1' />
+  <br />
+  File2 <input type='file' id='file2' />
+  <br />
+  <br />
+  <button id="btnCompare">Show Diff</button>
+  <button onclick="cypress()">Cypress</button>
+  <hr />
+  <h2 style='text-align:center'>Output</h2>
+  <button id='igl'>Ignore Less</button>
+  <button id='igc'>Ignore Colors</button>
+  <div id='diff'></div>
+
+  <script>
+    var file1;
+    var file2;
+    var control;
+    $('#file1').on('change', function () {
+      file1 = this.files[0];
+    });
+
+    $('#file2').on('change', function () {
+      file2 = this.files[0];
+    });
+
+    $( "#btnCompare" ).click(function() {
+      control = resemble(file1).compareTo(file2).onComplete(onComplete)
+    });
+
+    function onComplete(data) {
+      console.log(data);
+      var html = [];
+      html.push("<img style='width:100%;' src='" + data.getImageDataUrl() + "'/>");
+      $('#diff').html(html.join(''));
+    }
+    $('igl').on('click', function () {
+      control.ignoreLess();
+    });
+    $('igc').on('click', function () {
+      control.ignoreColors();
+    });
+
+    function cypress() {
+      cy.visit('https://vrtcolorpallete.herokuapp.com/palette.html')
+      cy.contains('Generar nueva paleta').click()
+      cy.screenshot()
+      cy.contains('Generar nueva paleta').click()
+      cy.screenshot()
+      cy.contains('Generar nueva paleta').click()
+    }
+  </script>
+
+</body>
+
+</html>
