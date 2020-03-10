@@ -10,59 +10,76 @@
 
 <body>
 
-  <h1>Resemble.js image comparission demo.</h1>
-  File1 <input type='file' id='file1' />
+  <h1>Herramienta de automatización de Visual Regression Testing.</h1>
+  <b>Imagen Base </b>
   <br />
-  File2 <input type='file' id='file2' />
+  <input type='file' id='fileImagenBase' />
   <br />
   <br />
-  <button id="btnCompare">Show Diff</button>
-  <button onclick="cypress()">Cypress</button>
+  <b>Imagen Modificada </b>
+  <br />
+  <input type='file' id='fileImagenModificada' />
+  <br />
+  <br />
+  <button id="btnCompare">Generar Reporte</button>
   <hr />
-  <h2 style='text-align:center'>Output</h2>
-  <button id='igl'>Ignore Less</button>
-  <button id='igc'>Ignore Colors</button>
-  <div id='diff'></div>
+  <h2 style='text-align:center'>Resultado</h2>
+
+  <table style="width: 100%;">
+    <tr>
+      <td style="width: 33%;">
+        <div>
+          <img id="imgBase" src="" alt="Base" width="100%" />
+        </div>
+      </td>
+      <td style="width: 33%;">
+        <div>
+          <img id="imgModificada" src="" alt="Modificada" width="100%" />
+        </div>
+      </td>
+      <td style="width: 33%;">
+        <div>
+          <img id="imgDiferencias" src="" alt="Diferencias" width="100%" />
+        </div>
+      </td>
+    </tr>
+  </table>
 
   <script>
-    var file1;
-    var file2;
+    var fileImagenBase;
+    var fileImagenModificada;
     var control;
-    $('#file1').on('change', function () {
-      file1 = this.files[0];
+
+    $('#fileImagenBase').on('change', function () {
+      fileImagenBase = this.files[0];
+      var reader = new FileReader();
+      reader.onload = function (e) {
+        $('#imgBase').attr('src', e.target.result);
+      }
+      reader.readAsDataURL(fileImagenBase);
     });
 
-    $('#file2').on('change', function () {
-      file2 = this.files[0];
+    $('#fileImagenModificada').on('change', function () {
+      fileImagenModificada = this.files[0];
+      var reader = new FileReader();
+      reader.onload = function (e) {
+        $('#imgModificada').attr('src', e.target.result);
+      }
+      reader.readAsDataURL(fileImagenModificada);
     });
 
-    $( "#btnCompare" ).click(function() {
-      control = resemble(file1).compareTo(file2).onComplete(onComplete)
+    $("#btnCompare").click(function () {
+      control = resemble(fileImagenBase).compareTo(fileImagenModificada).onComplete(onComplete)
     });
 
     function onComplete(data) {
       console.log(data);
-      var html = [];
+      /*var html = [];
       html.push("<img style='width:100%;' src='" + data.getImageDataUrl() + "'/>");
-      $('#diff').html(html.join(''));
-    }
-    $('igl').on('click', function () {
-      control.ignoreLess();
-    });
-    $('igc').on('click', function () {
-      control.ignoreColors();
-    });
-
-    function cypress() {
-      cy.visit('https://vrtcolorpallete.herokuapp.com/palette.html')
-      cy.contains('Generar nueva paleta').click()
-      cy.screenshot()
-      cy.contains('Generar nueva paleta').click()
-      cy.screenshot()
-      cy.contains('Generar nueva paleta').click()
+      $('#diff').html(html.join(''));*/
+      $("#imgDiferencias").attr("src", data.getImageDataUrl());
     }
   </script>
-
 </body>
 
 </html>
